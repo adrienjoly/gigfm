@@ -71,33 +71,26 @@ YoutubePlayer = (function() {
 
 		var embedAttrs = {
 			id: this.embedVars.playerId,
-			width: this.embedVars.height || '200',
-			height: this.embedVars.width || '200',
+			width: this.embedVars.width || '200',
+			height: this.embedVars.height || '200',
 			type: "application/x-shockwave-flash",
-			//data: 'https://www.youtube.com/apiplayer?autoplay=1&amp;version=3&amp;enablejsapi=1&amp;playerapiid='+vars.playerId+'&amp;controls=0&amp;modestbranding=1&amp;showinfo=0&amp;wmode=transparent&amp;origin=' + vars.origin,
-			data: 'https://www.youtube.com/v/'+this.embedVars.videoId+'?autoplay=1&amp;version=3&amp;enablejsapi=1&amp;playerapiid='+this.embedVars.playerId+'&amp;controls=0&amp;modestbranding=1&amp;showinfo=0&amp;wmode=transparent&amp;origin=' + this.embedVars.origin,
+			data: 'https://www.youtube.com/v/'+this.embedVars.videoId+'?autoplay=1&amp;version=3&amp;enablejsapi=1&amp;playerapiid='+this.embedVars.playerId+'&amp;controls=1&amp;modestbranding=1&amp;showinfo=1&amp;wmode=transparent&amp;origin=' + this.embedVars.origin,
 			innerHTML: '<param value="always" name="allowScriptAccess"><param value="transparent" name="wmode">'
 		};
-		if (USE_SWFOBJECT) {
-        	//swfobject.addDomLoadEvent(function(){console.log("swfobject is ready")});
-			var params = {
-				autoplay: 1,
-				version: 3, 
-				enablejsapi: 1,
-				playerapiid: this.embedVars.playerId,
-				controls: 0,
-				modestbranding: 1,
-				showinfo: 0,
-				wmode: "transparent",
-				origin: this.embedVars.origin,
-				//allowFullScreen: "true",
-				allowscriptaccess: "always"
-			};
-			swfobject.embedSWF(embedAttrs.data, this.embedVars.playerId, embedAttrs.width, embedAttrs.height, "9.0.0", "/scripts/swfobject_expressInstall.swf", null, params);
-		}
-		else {
-			$(this.element).attr(embedAttrs);
-		}
+		var params = {
+			autoplay: 1,
+			version: 3, 
+			enablejsapi: 1,
+			playerapiid: this.embedVars.playerId,
+			controls: 1,
+			modestbranding: 1,
+			showinfo: 1,
+			wmode: "transparent",
+			origin: this.embedVars.origin,
+			allowFullScreen: "true",
+			allowscriptaccess: "always"
+		};
+		swfobject.embedSWF(embedAttrs.data, this.embedVars.playerId, embedAttrs.width, embedAttrs.height, "9.0.0", "/scripts/swfobject_expressInstall.swf", null, params);
 		$(this.element).show();
 		if (/*!this.isReady &&*/ this.eventHandlers.onEmbedReady)
 			this.eventHandlers.onEmbedReady();
@@ -559,7 +552,9 @@ function GigfmPlayer() {
 	playem.addPlayer(YoutubePlayer, {
 		playerId: "genericplayer",
 		origin: window.location.host || window.location.hostname || "gigfm.herokuapp.com",
-		playerContainer: playerContainer
+		playerContainer: playerContainer,
+		width: 400,
+		height: 300
 	});
 
 	// ui-bound handlers
