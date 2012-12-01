@@ -72,10 +72,10 @@ function YoutubeSearch() {
 
 	function renderResult(r) {
 		return {
+			id: r.id,
 			img: r.img || r.thumbnail.hqDefault || r.thumbnail.sqDefault,
 			url: r.url || r.player["default"],
-			name: r.name || r.title,
-			playerLabel: this.label
+			name: r.name || r.title
 		};
 	};
 
