@@ -83,6 +83,7 @@ function renderDate(d) {
 
 function parseEvent(event, cb) {
   var self = {};
+  self.gId = event.url.substr(event.url.indexOf("/", 10));
   self.name = event.title;
   self.date = renderDate(new Date(event.startDate));
   self.desc = event.description;
