@@ -75,7 +75,7 @@ console.log("-= gigfm bookmarklet =-");
 		}
 		else {
 			inc = document.createElement("script");
-			var timer, interval = 500, retries = 10;
+			var timer, interval = 100, retries = 10;
 			function check() {
 				var loaded = inc.readyState && (inc.readyState == "loaded" || inc.readyState == "complete" || inc.readyState == 4);
 				//console.log("check timer", loaded, retries)
@@ -122,15 +122,13 @@ console.log("-= gigfm bookmarklet =-");
 		title.appendChild(textNode);
 		divThumb.appendChild(divCont);
 		divThumb.appendChild(title);
-		var btnShareIt = document.createElement("img");
-		btnShareIt.setAttribute("src", urlPrefix + "/images/btn-shareit.png");
-		divThumb.appendChild(btnShareIt);
+		//var btnShareIt = document.createElement("img");
+		//btnShareIt.setAttribute("src", urlPrefix + "/images/btn-shareit.png");
+		//divThumb.appendChild(btnShareIt);
 		return divThumb;
 	}
 
 	var thumbCounter = 0;
-	var eidSet = {}; // to prevent duplicates
-	var lastThumb = null;
 	var contentDiv;
 
 	function addThumb(thumb) {
@@ -157,91 +155,19 @@ console.log("-= gigfm bookmarklet =-");
 
   //============================================================================
 
-	function unwrapFacebookLink(src) {
-		// e.g. http://www.facebook.com/l.php?u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DKhXn0anD1lE&h=AAQFjMJBoAQFTPOP4HzFCv0agQUHB6Un31ArdmwvxzZxofA
-		var fbLink = src.split("facebook.com/l.php?u=");
-		if (fbLink.length>1) {
-			fbLink = decodeURIComponent(fbLink.pop().split("&").shift());
-			var result = fbLink.indexOf("//www.facebook.com/") == -1 ? fbLink : src;
-			//console.log("unwrapped facebook link", result);
-			return result;
-		}
-		return src;
-	}
-	
-	function addEmbedThumb(e, p, callback) {
-		var src = e.href || e.src || e.data;
-		if (src) {
-			src = unwrapFacebookLink(src);
-			p(src, function(embed){
-				if (embed) {
-					embed.title = embed.title || e.textNode || e.title || e.alt || p.label;
-					console.log("found", src, embed.title);
-				}
-				callback && callback(embed);
-			}, e);
-		}
-		else
-			callback && callback();
-	}
-
 	function initGigfmBookmarklet() {
-
-		var prov = [
-			new YoutubeDetector(),
-			new SoundCloudDetector(),
-			new VimeoDetector(),
-			Mp3Detector
-			//new DailymotionDetector()
-		];
 
 		console.log("initGigfmBookmarklet...");
 
-		var elementNames = ["iframe", "object", "embed", "a", "audio", "source"];
-		var nEmbeds = 0;
-
-		function whenDone() {
+		function whenDone(nEmbeds) {
 			document.getElementById("gigfmLoading").innerHTML = nEmbeds ? ""
 				: "No concerts were found on this page, sorry...";
-			if (nEmbeds == 1)
-				showForm(lastThumb);
-		}
-
-		function detectEmbed(e, callback) {
-			//console.log("detectEmbed", e.href || e.src || e.data);
-			var remaining = prov.length;
-			var detected = null;
-			for (var p=0; p<prov.length; ++p)
-				addEmbedThumb(e, prov[p], function(embed) {
-					nEmbeds += embed ? 1: 0;
-					if (embed && !eidSet[embed.eid])
-						addThumb(detected = lastThumb = eidSet[embed.eid] = embed);
-					if (0 == --remaining)
-						callback(detected);
-				});
 		}
 
 		contentDiv = document.getElementById("gigfmContent");
-		detectEmbed({src:window.location.href}, function(found) {
-			console.log("content page", found);
-			if (found)
-				showForm(lastThumb);
-			else {
-				var toDetect = [];
-				for (var i in elementNames) {
-					var elts = document.getElementsByTagName(elementNames[i]);
-					for (var j=0; j<elts.length; ++j)
-						toDetect.push(elts[j]);
-				}
-				function processNext() {
-					if (!toDetect.length)
-						whenDone();
-					else
-						detectEmbed(toDetect.shift(), processNext);
-				}
-				processNext();
-			}	
-		});
+
+		var trackDetector = new TrackDetector(include);
+		trackDetector.run(addThumb, whenDone);
 	}
 
 	var toInclude = [
@@ -250,8 +176,11 @@ console.log("-= gigfm bookmarklet =-");
 	];
 	
 	(function loadNext(){
-		if (toInclude.length)
-			include(urlPrefix + toInclude.shift() + urlSuffix, loadNext);
+		if (toInclude.length) {
+			var src = toInclude.shift();
+			console.log("loading", src, "...");
+			include(urlPrefix + src + urlSuffix, loadNext);
+		}
 		else initGigfmBookmarklet();
 	})();
 	

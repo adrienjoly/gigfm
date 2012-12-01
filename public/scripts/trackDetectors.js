@@ -1,3 +1,5 @@
+function TrackDetector(include) {
+
 	function YoutubeDetector() {
 		console.log("Initializing Youtube Detector");
 		var regex = ///https?\:\/\/(?:www\.)?youtu(?:\.)?be(?:\.com)?\/(?:(?:.*)?[\?\&]v=|v\/|embed\/|\/)?([a-zA-Z0-9_\-]+)/; //^https?\:\/\/(?:www\.)?youtube\.com\/[a-z]+\/([a-zA-Z0-9\-_]+)/
@@ -124,8 +126,7 @@
 	}
 */
 
-  //============================================================================
-  var Mp3Detector = (function() {
+  function Mp3Detector() {
     console.log("Initializing Mp3 Detector");    
     var reg = /([^\/]+)\.(?:mp3|ogg)$/;
     var cover = /*urlPrefix +*/ '/images/cover-audiofile.png';        
@@ -143,4 +144,84 @@
 			title: title
 		});
     };
-  })();
+  };
+
+  //============================================================================
+
+	var prov = [
+		new YoutubeDetector(),
+		new SoundCloudDetector(),
+		new VimeoDetector(),
+	//	Mp3Detector
+		//new DailymotionDetector()
+	];
+
+	var elementNames = ["iframe", "object", "embed", "a", "audio", "source"];
+
+	function run(addThumb, whenDone) {
+		console.log("Detecting Tracks...");
+		var nEmbeds = 0;
+		var eidSet = {}; // to prevent duplicates
+		var lastThumb = null;
+
+		function unwrapFacebookLink(src) {
+			// e.g. http://www.facebook.com/l.php?u=http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DKhXn0anD1lE&h=AAQFjMJBoAQFTPOP4HzFCv0agQUHB6Un31ArdmwvxzZxofA
+			var fbLink = src.split("facebook.com/l.php?u=");
+			if (fbLink.length>1) {
+				fbLink = decodeURIComponent(fbLink.pop().split("&").shift());
+				var result = fbLink.indexOf("//www.facebook.com/") == -1 ? fbLink : src;
+				//console.log("unwrapped facebook link", result);
+				return result;
+			}
+			return src;
+		}
+		
+		function addEmbedThumb(e, p, callback) {
+			var src = e.href || e.src || e.data;
+			if (src) {
+				src = unwrapFacebookLink(src);
+				p(src, function(embed){
+					if (embed) {
+						embed.title = embed.title || e.textNode || e.title || e.alt || p.label;
+						console.log("found", src, embed.title);
+					}
+					callback && callback(embed);
+				}, e);
+			}
+			else
+				callback && callback();
+		}
+
+		function detectEmbed(e, callback) {
+			//console.log("detectEmbed", e.href || e.src || e.data);
+			var remaining = prov.length;
+			var detected = null;
+			for (var p=0; p<prov.length; ++p)
+				addEmbedThumb(e, prov[p], function(embed) {
+					nEmbeds += embed ? 1: 0;
+					if (embed && !eidSet[embed.eid])
+						addThumb(detected = lastThumb = eidSet[embed.eid] = embed);
+					if (0 == --remaining)
+						callback(detected);
+				});
+		}
+
+		var toDetect = [];
+		for (var i in elementNames) {
+			var elts = document.getElementsByTagName(elementNames[i]);
+			for (var j=0; j<elts.length; ++j)
+				toDetect.push(elts[j]);
+		}
+
+		(function processNext() {
+			if (!toDetect.length)
+				whenDone(nEmbeds);
+			else
+				detectEmbed(toDetect.shift(), processNext);
+		})();
+	}
+
+	return {
+		run: run
+	};
+}
