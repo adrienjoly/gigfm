@@ -64,13 +64,22 @@ app.get('/festival/*', renderEvent);
 app.get('/lastfmCallback', function(req, res) {
   var token = req.query["token"];
   console.log("token: ", token);
-  lastfm.fetchSessionKey(token, function(key){
-    console.log("session key: ", res);
+  lastfm.fetchSessionKey(token, function(sk){
+    console.log("session key: ", sk);
+    res.redirect('/gigs?sk='+sk); 
   });
   /*
   lastfm.getArtists("cher", function(res){
     console.log(res);
   });
   */
-  res.send('token: ' + token);
 });
+
+app.get('/gigs', function(req, res) {
+  var sk = req.query["sk"];
+  lastfm.fetchRecommendedGigs(sk, function(gigs) {
+    console.log("gigs", gigs);
+    res.send(gigs);
+  });
+});
+
