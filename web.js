@@ -57,3 +57,11 @@ function renderEvent(req, res) {
 
 app.get('/event/*', renderEvent);
 app.get('/festival/*', renderEvent);
+
+app.get('/lastfmCallback*', function(req, res) {
+  console.log("/lastfmCallback GET req", req.get, req.param, req.params);
+});
+
+app.post('/lastfmCallback*', function(req, res) {
+  console.log("/lastfmCallback POST req", req.get, req.param, req.params);
+});
