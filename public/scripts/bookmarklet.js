@@ -113,29 +113,16 @@ console.log("-= gigfm bookmarklet =-");
 		].join('\n');
 	})();
 	
-	function showForm(thumb) {
-		console.log("selected thumb", thumb)
-		/*
-		var text = getSelText();
-		var src = urlPrefix+'/post/add?embed=' + encodeURIComponent(thumb.url)
-			+ (thumb.title ? '&title=' + encodeURIComponent(thumb.title) : '')
-			+ '&refUrl=' + encodeURIComponent(window.location.href)
-			+ '&refTtl=' + encodeURIComponent(document.title)
-			+ (text ? '&text=' + encodeURIComponent(text) : '');
-		div.removeChild(contentDiv);
-		div.innerHTML += '<iframe id="gigfmContent" src="'+src+'"></iframe>';
-		*/
-	}
-	
 //============================================================================
 
 	var thumbCounter = 0;
 	var contentDiv;
 
 	function renderThumb(thumb) {
-		var divThumb = document.createElement("div");
+		var divThumb = document.createElement("a");
 		divThumb.setAttribute("id", thumb.id);
 		divThumb.setAttribute("class", "gigfmThumb");
+		divThumb.setAttribute("href", urlPrefix + thumb.gId);
 		var divCont = document.createElement("div");
 		divCont.setAttribute("class", "gigfmCont");
 		divCont.appendChild(thumb.element);
@@ -155,7 +142,6 @@ console.log("-= gigfm bookmarklet =-");
 		thumb.element = document.createElement("img");
 		thumb.element.src = thumb.img;
 		var divThumb = renderThumb(thumb);
-		divThumb.onclick = function() {showForm(thumb);};
 		contentDiv.appendChild(divThumb);
 	}
 	
@@ -167,18 +153,11 @@ console.log("-= gigfm bookmarklet =-");
 		function whenDone(nEmbeds) {
 			console.log("done detection!");
 			document.getElementById("gigfmLoading").innerHTML = nEmbeds ? ""
-				: "No concerts were found on this page, sorry...";
+				: "No gigs were found on this page, sorry...";
 		}
 		contentDiv = document.getElementById("gigfmContent");
-		//var trackDetector = new TrackDetector(include);
-		//trackDetector.run(addThumb, whenDone);
 		var gigDetector = new GigDetector();
-		//gigDetector.run(addThumb, whenDone);
-		//console.log(gigDetector.getGigLinks());
-		gigDetector.fetchGigLinks(function(gig) {
-			//console.log(gig.name, gig);
-			addThumb(gig);
-		}, whenDone)
+		gigDetector.fetchGigLinks(addThumb, whenDone)
 	}
 
   //============================================================================

@@ -27,7 +27,11 @@
     }
 
     $(document).ready(function() {
-      (function populateEventPage(event) {
+
+      var gId = window.location.href.split("?")[0];
+      gId = gId.substr(gId.indexOf("/", 10)); //"/event/3413899+Divider+at+La+Cantine+de+Belleville+on+1+December+2012"
+
+      (function populateEventPage(gId) {
 
         var TRACKS_PER_ARTIST = 5;
 
@@ -80,8 +84,7 @@
         }
 
         var lastfm = new Lastfm();
-        new lastfm.LastfmGig(event, function(gig) {
-          //console.log("gig", gig);
+        new lastfm.LastfmGig({gId:gId}, function(gig) {
           document.title = gig.name;
           $("h1").text(gig.name);
           if (gig.artists) {
@@ -95,10 +98,7 @@
           }
         });
 
-      })({
-        name: "Divider à/au La Cantine de Belleville",
-        gId: "/event/3413899+Divider+at+La+Cantine+de+Belleville+on+1+December+2012"
-      });
+      })(gId);
 
     });
 

@@ -50,6 +50,7 @@ function Lastfm() {
 			return cb();
 
 		function parseEvent(event, cb) {
+			self.name = event.title;
 			self.date = new Date(event.startDate);
 			self.desc = event.description;
 			self.url = event.website || event.url;
