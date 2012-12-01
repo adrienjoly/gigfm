@@ -2,6 +2,9 @@ var async   = require('async');
 var express = require('express');
 var util    = require('util');
 
+var lastfm  = require('lastfm');
+
+
 // create an express webserver
 var app = express.createServer(
   express.logger(),
@@ -58,10 +61,12 @@ function renderEvent(req, res) {
 app.get('/event/*', renderEvent);
 app.get('/festival/*', renderEvent);
 
-app.get('/lastfmCallback*', function(req, res) {
-  console.log("/lastfmCallback GET req", req.get, req.param, req.params);
-});
-
-app.post('/lastfmCallback*', function(req, res) {
-  console.log("/lastfmCallback POST req", req.get, req.param, req.params);
+app.get('/lastfmCallback', function(req, res) {
+  var token = req.query["token"];
+  console.log("/lastfmCallback GET token", token);
+  //lastfm.auth();
+  lastfm.getArtists("cher", function(res){
+    console.log(res);
+  });
+  res.send('token: ' + token);
 });
