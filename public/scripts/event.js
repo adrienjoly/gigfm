@@ -23,10 +23,10 @@ $(document).ready(function() {
     }
 
     function addTrack(artist, trackName, embed) {
-      $("#events").append([
+      $("#tracklist").append([
         '<li data-i="'+tracks.length+'" onclick="window.playem.playAll('+tracks.length+');">',
-        '<h2>' + artist.name + " - " + trackName + '<h2>',
-      //  '<img src="'+embed.img+'">',
+        '<div class="play"></div>',
+        '<div><a>' + artist.name + " - " + trackName + '</a></div>',
         "</li>"
       ].join('\n'));
 
@@ -72,6 +72,9 @@ $(document).ready(function() {
     new lastfm.LastfmGig({gId:gId}, function(gig) {
       document.title = gig.name;
       $("h1").text(gig.name);
+      $("#date").text(gig.date);
+      for (var i in gig.artists)
+        $("#artists").append("<li>"+gig.artists[i].name+"</li>");
       if (gig.artists) {
         (function next() {
           var artist = gig.artists.shift();

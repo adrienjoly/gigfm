@@ -539,10 +539,7 @@ function GigfmPlayer() {
 	var playerContainer = document.createElement('div');
 	$(playerContainer).append('<div id="playBtnOverlay" onclick="window.playem.playPause();">');
 
-	var $containerParent = $("#contentPane");
-	if (!$containerParent.length)
-		$containerParent = $("body");
-
+	var $containerParent = $("#videoPlayer");
 	$containerParent.prepend($('<div id="playerContainer">').append(playerContainer));
 
 	// init playem object, based on DOM elements
@@ -553,8 +550,8 @@ function GigfmPlayer() {
 		playerId: "genericplayer",
 		origin: window.location.host || window.location.hostname || "gigfm.herokuapp.com",
 		playerContainer: playerContainer,
-		width: 400,
-		height: 300
+		width: 516,
+		height: 360
 	});
 
 	// ui-bound handlers

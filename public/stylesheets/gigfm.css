@@ -61,6 +61,10 @@ body {
 	padding: 0 15px;
 }
 
+.clear {
+	clear: both;
+}
+
 
 /* HEADER */
 #header {
@@ -108,20 +112,20 @@ body {
 }
 
 /* CONTENT DASHBOARD */
-ul {
+.content-concert ul {
 }
 
-li {
+.content-concert li {
 	float: left;
 	width: 300px;
 	margin-right: 15px;
 }
 
-li:last-child {
+.content-concert li:last-child {
 	margin-right: 0;
 }
 
-li p.date {
+.content-concert li p.date {
 	color: #ae5c1f;
 	font-size: 16px;
 	text-shadow: 0 1px 0 rgba(255,255,255,0.4);
@@ -132,12 +136,17 @@ li p.date {
 	margin-bottom: 12px;
 }
 
-li .cover {
+.content-concert li .cover {
 	width: 300px;
 	height: 300px;
 	position: relative;
 }
-
+/*
+.content-concert li .cover img {
+	background-color: #000;
+	border-radius: 3px;
+}
+*/
 li .cover .img {
 	background-color: #000;
 	border-radius: 3px;
@@ -146,7 +155,7 @@ li .cover .img {
 	background-size: cover;
 }
 
-li .info {
+.content-concert li .info {
 	background: #000;
 	position: absolute;
 	top: 12px;
@@ -155,14 +164,14 @@ li .info {
 	opacity: 0.7;
 }
 
-li .info h3 {
+.content-concert li .info h3 {
 	font-size: 16px;
 	line-height: 24px;
 	margin-bottom: 3px;
 	opacity: 1;
 }
 
-li .info .adress-fast {
+.content-concert li .info .adress-fast {
 	font-size: 12px;
 	color: #cbcbcb;
 	line-height: 18px;
@@ -170,18 +179,18 @@ li .info .adress-fast {
 
 
 /* OVERLAY */
-.overlay {
+.content-concert .overlay {
 	position: absolute;
 	top: 0;
 	display: none;
 	
 }
 
-li .cover:hover .overlay {
+.content-concert li .cover:hover .overlay {
 	display: block;
 }
 
-.overlay a .black-cover {
+.content-concert .overlay a .black-cover {
 	background: #000;
 	width: 300px;
 	height: 300px;
@@ -190,7 +199,7 @@ li .cover:hover .overlay {
 	border-radius: 3px;
 }
 
-.overlay a .play {
+.content-concert .overlay a .play {
 	background: url(/images/icon-play.png) no-repeat;
 	width: 84px;
 	height: 84px;
@@ -207,6 +216,7 @@ li .cover:hover .overlay {
 	border-radius: 3px;
 	position: relative;
 	overflow: hidden;
+	margin-bottom: 30px;
 }
 
 .content-playlist .head-event h1 {
@@ -257,5 +267,122 @@ li .cover:hover .overlay {
 	background-color: #74569a;
 	box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
 }
+
+.playlist {
+	background: ;
+	width: 516px;
+	height: 800px;
+	float: left;
+	margin-right: 30px;
+}
+
+.playlist .tracklist ul {
+	background: #FDFDF6;
+	border: 1px solid #CFC5B2;
+	border-radius: 3px;
+}
+
+.playlist .tracklist ul li {
+	border-bottom: 1px solid #CFC5B2;
+	padding: 8px;
+	min-height: 27px;
+}
+
+.playlist .tracklist ul li:last-child {
+	border-bottom: none;
+}
+
+.playlist .tracklist ul li .play {
+	width: 27px;
+	height: 27px;
+	background: url(/images/play-icon.png) no-repeat;
+	display: inline-block;
+	float: left;
+	margin-right: 8px;
+}
+
+.playlist .tracklist ul li div a {
+	color: #7f67b5;
+	font-weight: bold;
+	line-height: 30px;
+}
+
+.rightbar {
+	float: right;
+	width: 382px;
+}
+
+
+/* H3 RIGHT BAR */
+.lineup h3, .adress h3, .share h3 {
+	text-transform: uppercase;
+	color: #ae5c1f;
+	font-weight: bold;
+	padding-bottom: 4px;
+	-webkit-font-smoothing: antialiased;
+	border-bottom: 1px solid #E8D0B5;
+	box-shadow: 0 1px 0 rgba(255,255,255,1);
+	margin-bottom: 8px;
+}
+
+/* MARGIN BOTTOM RIGHT BAR */
+.lineup, .adress, .share {
+	margin-bottom: 30px;
+}
+
+/*LINE UP */
+.lineup ul {
+	
+}
+
+.lineup ul li {
+	padding: 6px 12px;
+	background: #E7CEB3;
+	float: left;
+	font-size: 12px;
+	display: inline;
+	border-radius: 40px;
+	color: #643715;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+/* MAP */
+.adress #map {
+	position: relative;
+}
+
+.adress #map #adresse {
+	position: absolute;
+	top: 0;
+	background-color: #FFF;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+	width: 90%;
+	left: 10px;
+	top: 74%;
+	padding: 10px;
+	border-radius: 3px;
+}
+
+.adress #map #adresse h4 {
+	font-size: 14px;
+	color: #33312b;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.adress #map #adresse p {
+	font-size: 12px;
+	color: #6b675a;
+}
+
+/* SHARE */
+.share .links ul li {
+	float: left;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
 
 
