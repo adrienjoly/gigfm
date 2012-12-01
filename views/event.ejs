@@ -3,12 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Loading event...</title>
-    <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
-    <!--[if IEMobile]>
-    <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
-    <![endif]-->
     <meta property="og:title" content="<%= app.name %>" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<%= url() %>" />
@@ -16,6 +12,7 @@
     <meta property="og:site_name" content="<%= app.name %>" />
     <meta property="og:description" content="My first app" />
     <meta property="fb:app_id" content="<%= app.id %>" />
+    <link href="/stylesheets/gigfm.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="/scripts/GigDetector.js"></script>
     <script type="text/javascript" src="/scripts/YoutubeSearch.js"></script>
@@ -31,6 +28,78 @@
     <![endif]-->
   </head>
   <body>
+    <div id="wrap">
+      <div id="header">
+        <a href="#"><img src="images/logo.png" alt="logo" title="Gig.fm" width="91" height="35" /></a>
+        <div class="user">
+          <div class="user-avatar">
+            <img src="images/avatar-1.png" alt="user avatar" title="" />
+          </div>
+          <p>Hello <span>James Garett</span></p>
+        </div>
+      </div>
+      
+      <div class="content-playlist">
+        <div class="head-event">
+          <h1>Loading event...</h1>
+          <p class="date">(date)</p>
+          <a href="#">Buy the ticket</a>
+        </div>
+          
+        <div id="player" class="playlist">
+          <div class="tracklist">
+            <ul>
+              <li><div class="play"></div><div><a>Brodinski - Nobody Rules The Streets (Feat. Louisahhh!!!)</a></div></li>
+              <li><div class="play"></div><div><a>Para One - Ice Cold</a></div></li>
+              <li><div class="play"></div><div><a>Surkin - Radio Fireworks</a></div></li>
+          </div>
+        </div>
+        
+        <div class="rightbar">
+          <div class="lineup">
+            <h3>Line Up</h3>
+            <ul id="events">
+              <li>Brodinski</li>
+              <li>Surkin</li>
+              <li>The Hacker</li>
+              <li>Bobmo</li>
+              <li>Gesaffelstein</li>
+            </ul>
+            <div class="clear"></div>
+          </div>
+          
+          <div class="adress">
+            <h3>Adress Event</h3>
+            <div id="map">
+              <iframe width="382" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.fr/maps?f=q&amp;source=s_q&amp;hl=fr&amp;q=social+club&amp;sll=48.868589,2.34321&amp;sspn=0.005307,0.008862&amp;ie=UTF8&amp;t=m&amp;st=115968771510351694523&amp;rq=1&amp;ev=zi&amp;split=1&amp;radius=0.24&amp;hq=social+club&amp;hnear=&amp;ll=48.869054,2.343276&amp;spn=0.005307,0.008862&amp;z=14&amp;iwloc=A&amp;cid=11189108916386383685&amp;output=embed"></iframe>
+            
+            <div id="adresse">
+              <h4>Espace Pierre Cardin</h4>
+              <p>Adresse en plus</p>
+            </div>
+            </div>
+          </div>
+          
+          <div class="share">
+            <h3>Share with friends</h3>
+            <div class="links">
+              <ul>
+                <li>Twitter</li>
+                <li>Facebook</li>
+                <li>Google+</li>
+              </ul>
+              <div class="clear"></div>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+      </div><!-- END CONTENT -->
+      
+    </div>
+
+    <!--
     <header class="clearfix">
       <div>
         <h1>Loading event...</h1>
@@ -54,7 +123,7 @@
 
     <ul id="events">
     </ul>
-
+    -->
   </body>
 </html>
 

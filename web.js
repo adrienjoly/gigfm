@@ -126,7 +126,7 @@ function parseEvent(event, cb) {
 function prepareGigs(gigs) {
   gigs = gigs.events.event; //.slice(0, 3);
   gigs = gigs.map(parseEvent);
-  console.log("gigs", gigs);
+  //console.log("gigs", gigs);
   return gigs;
 }
 
