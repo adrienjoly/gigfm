@@ -170,15 +170,20 @@ console.log("-= gigfm bookmarklet =-");
 				: "No concerts were found on this page, sorry...";
 		}
 		contentDiv = document.getElementById("gigfmContent");
-		var trackDetector = new TrackDetector(include);
-		trackDetector.run(addThumb, whenDone);
+		//var trackDetector = new TrackDetector(include);
+		//trackDetector.run(addThumb, whenDone);
+		var gigDetector = new GigDetector();
+		//gigDetector.run(addThumb, whenDone);
+		console.log(gigDetector.getGigLinks());
 	}
 
   //============================================================================
 
 	var toInclude = [
 		"/stylesheets/bookmarklet.css",
-		"/scripts/trackDetectors.js"
+		"/scripts/jquery.min.js",
+		"/scripts/GigDetector.js"
+	//	"/scripts/TrackDetector.js"
 	];
 	
 	(function loadNext(){
