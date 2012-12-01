@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+    <title>Loading event...</title>
+    <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
+    <!--[if IEMobile]>
+    <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
+    <![endif]-->
+    <meta property="og:title" content="<%= app.name %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= url() %>" />
+    <meta property="og:image" content="<%= url('/logo.png') %>" />
+    <meta property="og:site_name" content="<%= app.name %>" />
+    <meta property="og:description" content="My first app" />
+    <meta property="fb:app_id" content="<%= app.id %>" />
+    <script type="text/javascript" src="/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/scripts/GigDetector.js"></script>
+    <script type="text/javascript" src="/scripts/YoutubeSearch.js"></script>
+    <script type="text/javascript">
+    function logResponse(response) {
+      if (console && console.log) {
+        console.log('The response was', response);
+      }
+    }
+
+    $(document).ready(function() {
+      (function populateEventPage(event) {
+
+        var TRACKS_PER_ARTIST = 5;
+
+        var youtube = new YoutubeSearch();
+        var distance = new LevenshteinDistance();
+
+        var tracks = [];
+
+        function whenDone() {
+          console.log("done");
+        }
+
+        function addTrack(artist, trackName, embed) {
+          $("#events").append([
+            '<li data-i="'+tracks.length+'">',
+            '<h2>' + artist.name + " - " + trackName + '<h2>',
+            '<img src="'+embed.img+'">',
+            "</li>"
+          ].join('\n'));
+          tracks.push(embed);
+        }
+
+        function addArtist(artist, trackHandler, cb) {
+          artist.fetchTopTracks(function(topTracks){
+            if (!topTracks || !topTracks.length)
+              return cb();
+            var nbTracks = TRACKS_PER_ARTIST;
+            (function next() {
+              var trackName = topTracks.shift();
+              if (!trackName || nbTracks == 0)
+                cb();
+              else {
+                var q = artist.name + " " + trackName;
+                youtube.query(q, function(res) {
+                  if (res && res.length) {
+                    var res = res[0];
+                    var d = distance.compute(q, res.name);
+                    if (d < 10) {
+                      trackHandler(artist, trackName, res);
+                      --nbTracks;
+                    }
+                    else
+                      console.log("skipped", q, "=>", res.name, "(", d, ")")
+                  }
+                  next();
+                });
+              }
+            })();
+          });
+        }
+
+        var lastfm = new Lastfm();
+        new lastfm.LastfmGig(event, function(gig) {
+          //console.log("gig", gig);
+          document.title = gig.name;
+          $("h1").text(gig.name);
+          if (gig.artists) {
+            (function next() {
+              var artist = gig.artists.shift();
+              if (!artist)
+                whenDone();
+              else
+                addArtist(artist, addTrack, next);
+            })();
+          }
+        });
+
+      })({
+        name: "Divider à/au La Cantine de Belleville",
+        gId: "/event/3413899+Divider+at+La+Cantine+de+Belleville+on+1+December+2012"
+      });
+
+    });
+
+    </script>
+    <!--[if IE]>
+      <script type="text/javascript">
+        var tags = ['header', 'section'];
+        while(tags.length)
+          document.createElement(tags.pop());
+      </script>
+    <![endif]-->
+  </head>
+  <body>
+    <header class="clearfix">
+      <div>
+        <h1>Loading event...</h1>
+      </div>
+    </header>
+
+    <section id="events">
+      <p>Generating playlist...</p>
+    </section>
+
+  </body>
+</html>
+

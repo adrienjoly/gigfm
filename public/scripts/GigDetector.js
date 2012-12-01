@@ -41,9 +41,9 @@ function Lastfm() {
 
 	this.LastfmGig = function(a, cb) {
 		var self = this;
-		this.a = a;
-		this.name = a.innerText;
-		this.gId = a.href.substr(a.href.indexOf("/", 10));
+		//this.a = a;
+		this.name = a.name || a.innerText;
+		this.gId = a.gId || a.href.substr(a.href.indexOf("/", 10));
 		this.id = this.gId.split("/").pop().split("+")[0];
 
 		if (this.gId.indexOf("/venue/") == 0)

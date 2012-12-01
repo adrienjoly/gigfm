@@ -9,12 +9,7 @@ var app = express.createServer(
   express.bodyParser(),
   express.cookieParser(),
   // set this to a secret value to encrypt session cookies
-  express.session({ secret: process.env.SESSION_SECRET || 'secret123' }),
-  require('faceplate').middleware({
-    app_id: process.env.FACEBOOK_APP_ID,
-    secret: process.env.FACEBOOK_SECRET,
-    scope:  'user_likes,user_photos,user_photo_video_tags'
-  })
+  express.session({ secret: process.env.SESSION_SECRET || 'secret123' })
 );
 
 // listen to the PORT given to us in the environment
@@ -43,67 +38,22 @@ app.dynamicHelpers({
   },
 });
 
-function render_page(req, res) {
+function renderIndex(req, res) {
   res.render("bookmarklet.ejs", {
       layout: false,
       req: req
     });
-  /*
-  req.facebook.app(function(app) {
-    req.facebook.me(function(user) {
-      res.render('index.ejs', {
-        layout:    false,
-        req:       req,
-        app:       app,
-        user:      user
-      });
-    });
-  });
-  */
 }
 
-function handle_facebook_request(req, res) {
+app.get('/', renderIndex);
+app.post('/', renderIndex);
 
-  // if the user is logged in
-  if (req.facebook.token) {
-
-    async.parallel([
-      function(cb) {
-        // query 4 friends and send them to the socket for this socket id
-        req.facebook.get('/me/friends', { limit: 4 }, function(friends) {
-          req.friends = friends;
-          cb();
-        });
-      },
-      function(cb) {
-        // query 16 photos and send them to the socket for this socket id
-        req.facebook.get('/me/photos', { limit: 16 }, function(photos) {
-          req.photos = photos;
-          cb();
-        });
-      },
-      function(cb) {
-        // query 4 likes and send them to the socket for this socket id
-        req.facebook.get('/me/likes', { limit: 4 }, function(likes) {
-          req.likes = likes;
-          cb();
-        });
-      },
-      function(cb) {
-        // use fql to get a list of my friends that are using this app
-        req.facebook.fql('SELECT uid, name, is_app_user, pic_square FROM user WHERE uid in (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1', function(result) {
-          req.friends_using_app = result;
-          cb();
-        });
-      }
-    ], function() {
-      render_page(req, res);
+function renderEvent(req, res) {
+  res.render("event.ejs", {
+      layout: false,
+      req: req
     });
-
-  } else {
-    render_page(req, res);
-  }
 }
 
-app.get('/', handle_facebook_request);
-app.post('/', handle_facebook_request);
+app.get('/event/*', renderEvent);
+app.get('/festival/*', renderEvent);
