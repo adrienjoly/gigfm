@@ -5,10 +5,10 @@ function Lastfm() {
 	var apiPrefix = "http://ws.audioscrobbler.com/2.0/?api_key="+apiKey+"&format=json";
 
 	this.LastfmArtist = function(name) {
+		var self = this;
 		this.id = name.replace(/\s/g, "+");
 		this.name = name;
 		/*
-		var self = this;
 		function parseArtist(artist) {}
 		var reqUrl = apiPrefix + "&method=artist.getinfo&artist="+this.id;
 		$.getJSON(reqUrl, function(res){
@@ -17,6 +17,26 @@ function Lastfm() {
 			console.log("artist", self.name, reqUrl, res);
 		});
 		*/
+
+		// http://www.lastfm.fr/api/show/artist.getPodcast => Free MP3
+
+		function parseTopTracks(tracks) {
+			self.tracks = tracks.map(function(track){
+				return track.name;
+			});
+			//console.log("tracks", self.tracks);
+		}
+
+		this.fetchTopTracks = function(cb) {
+			var reqUrl = apiPrefix + "&method=artist.gettoptracks&artist="+this.id;
+			//console.log(reqUrl);
+			$.getJSON(reqUrl, function(res){
+				//console.log(res.toptracks)
+				if (res && res.toptracks && res.toptracks.track)
+					parseTopTracks(res.toptracks.track.join ? res.toptracks.track : [res.toptracks.track]);
+				cb(self.tracks);
+			});
+		};
 	}
 
 	this.LastfmGig = function(a, cb) {
@@ -30,16 +50,6 @@ function Lastfm() {
 			return cb();
 
 		function parseEvent(event, cb) {
-			/*
-			if (typeof event.artists.artist == "string")
-				self.artists = [
-					new lastfm.LastfmArtist(event.artists.artist)
-				];
-			else
-				self.artists = event.artists.artist.map(function(name, i){
-					return new lastfm.LastfmArtist(name);
-				});
-			*/
 			self.date = new Date(event.startDate);
 			self.desc = event.description;
 			self.url = event.website || event.url;
@@ -71,6 +81,14 @@ function Lastfm() {
 						];
 				}
 			}
+			if (typeof event.artists.artist == "string")
+				self.artists = [
+					new lastfm.LastfmArtist(event.artists.artist)
+				];
+			else
+				self.artists = event.artists.artist.map(function(name, i){
+					return new lastfm.LastfmArtist(name);
+				});
 			cb(self);
 		}
 
@@ -97,71 +115,24 @@ function GigDetector() {
 	};
 
 	this.fetchGigLinks = function(gigHandler, onDone) {
+		var nDetected = 0;
 		var anchors = $("a.url");
-		var links = []; /*$("a.url").map(function(i,a){
-			return a;
-		});*/
+		var links = [];
 		for (var i = anchors.length - 1; i >= 0; i--)
 			links.push(anchors[i]);
 		(function next() {
 			var link = links.pop();
 			//console.log("next", link.innerText)
 			if (!link)
-				return onDone();
+				return onDone(nDetected);
 			else
 				new lastfm.LastfmGig(link, function(gig) {
-					if (gig)
+					if (gig) {
+						nDetected ++;
 						gigHandler(gig);
+					}
 					next();
 				});
 		})();
 	};
-
-/*
-	this.run = function(addThumb, whenDone) {
-		console.log("Detecting Gigs...");
-		var nEmbeds = 0;
-
-		function addEmbedThumb(e, p, callback) {
-			var src = e.href || e.src || e.data;
-			if (src) {
-				p(src, function(embed){
-					if (embed) {
-						embed.title = embed.title || e.textNode || e.title || e.alt || p.label;
-						console.log("found", src, embed.title);
-					}
-					callback && callback(embed);
-				}, e);
-			}
-			else
-				callback && callback();
-		}
-
-		function detectEmbed(e, callback) {
-			//console.log("detectEmbed", e.href || e.src || e.data);
-			var remaining = prov.length;
-			var detected = null;
-			for (var p=0; p<prov.length; ++p)
-				addEmbedThumb(e, prov[p], function(embed) {
-					nEmbeds += embed ? 1: 0;
-					if (embed)
-						addThumb(detected = embed);
-					if (0 == --remaining)
-						callback(detected);
-				});
-		}
-
-		var toDetect = [];
-		var elts = document.getElementsByTagName("a");
-		for (var j=0; j<elts.length; ++j)
-			toDetect.push(elts[j]);
-
-		(function processNext() {
-			if (!toDetect.length)
-				whenDone(nEmbeds);
-			else
-				detectEmbed(toDetect.shift(), processNext);
-		})();
-	}
-	*/
 }

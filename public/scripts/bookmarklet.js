@@ -139,7 +139,7 @@ console.log("-= gigfm bookmarklet =-");
 		var divCont = document.createElement("div");
 		divCont.setAttribute("class", "gigfmCont");
 		divCont.appendChild(thumb.element);
-		var textNode = document.createTextNode(thumb.title);
+		var textNode = document.createTextNode(thumb.name);
 		var title = document.createElement("p");
 		title.appendChild(textNode);
 		divThumb.appendChild(divCont);
@@ -176,10 +176,9 @@ console.log("-= gigfm bookmarklet =-");
 		//gigDetector.run(addThumb, whenDone);
 		//console.log(gigDetector.getGigLinks());
 		gigDetector.fetchGigLinks(function(gig) {
-			console.log(gig.name, gig);
-		}, function() {
-			console.log("done!")
-		})
+			//console.log(gig.name, gig);
+			addThumb(gig);
+		}, whenDone)
 	}
 
   //============================================================================
