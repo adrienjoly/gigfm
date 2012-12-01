@@ -63,10 +63,14 @@ app.get('/festival/*', renderEvent);
 
 app.get('/lastfmCallback', function(req, res) {
   var token = req.query["token"];
-  console.log("/lastfmCallback GET token", token);
-  //lastfm.auth();
+  console.log("token: ", token);
+  lastfm.fetchSessionKey(token, function(key){
+    console.log("session key: ", res);
+  });
+  /*
   lastfm.getArtists("cher", function(res){
     console.log(res);
   });
+  */
   res.send('token: ' + token);
 });
