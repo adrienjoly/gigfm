@@ -41,21 +41,20 @@ app.dynamicHelpers({
   },
 });
 
-function renderIndex(req, res) {
-  res.render("bookmarklet.ejs", {
+
+
+app.get('/', function (req, res) {
+  res.render("index.ejs", {
       layout: false,
       req: req
     });
-}
-
-app.get('/', renderIndex);
-app.post('/', renderIndex);
+});
 
 function renderEvent(req, res) {
   res.render("event.ejs", {
-      layout: false,
-      req: req
-    });
+    layout: false,
+    req: req
+  });
 }
 
 app.get('/event/*', renderEvent);
@@ -75,11 +74,70 @@ app.get('/lastfmCallback', function(req, res) {
   */
 });
 
+var day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+function renderDate(d) {
+  return day[d.getDay()] + ", " + month[d.getMonth()] + " " + d.getDate() + "th";
+}
+
+function parseEvent(event, cb) {
+  var self = {};
+  self.name = event.title;
+  self.date = renderDate(new Date(event.startDate));
+  self.desc = event.description;
+  self.url = event.website || event.url;
+  if (event.tags && event.tags.tag)
+    self.tags = event.tags.tag;
+  if (event.image) {
+    //console.log(typeof event.image, event.image)
+    if (typeof event.image == "string")
+      self.img = event.image;
+    else
+      for(var i=0; i<event.image.length; ++i)
+        self.img = event.image[i]["#text"];
+  }
+  if (event.venue) {
+    self.venue = {
+      id: event.venue.id,
+      name: event.venue.name,
+      url: event.venue.website || event.venue.url,
+    };
+    if (event.venue.location) {
+      self.venue.city = event.venue.location.city;
+      self.venue.street = event.venue.location.street;
+      self.venue.country = event.venue.location.country;
+      self.venue.postalcode = event.venue.location.postalcode;
+      if (event.venue.location["geo:point"])
+        self.venue.latlng = [
+          event.venue.location["geo:point"]["geo:lat"],
+          event.venue.location["geo:point"]["geo:long"]
+        ];
+    }
+  }
+  if (typeof event.artists.artist == "string")
+    self.artists = [ event.artists.artist ];
+  else
+    self.artists = event.artists.artist;
+  return self;
+}
+
+function prepareGigs(gigs) {
+  gigs = gigs.events.event; //.slice(0, 3);
+  gigs = gigs.map(parseEvent);
+  console.log("gigs", gigs);
+  return gigs;
+}
+
 app.get('/gigs', function(req, res) {
   var sk = req.query["sk"];
   lastfm.fetchRecommendedGigs(sk, function(gigs) {
-    console.log("gigs", gigs);
-    res.send(gigs);
+    res.render("gigs.ejs", {
+      layout: false,
+      req: req,
+      gigs: prepareGigs(gigs)
+    });
+    //res.send(gigs);
   });
 });
 

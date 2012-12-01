@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gig.fm</title>
+	<link href="/stylesheets/gigfm.css" rel="stylesheet" type="text/css">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+			<a href="#"><img src="/images/logo.png" alt="logo" title="Gig.fm" width="91" height="35" /></a>
+			<div class="user">
+				<div class="user-avatar">
+					<img src="/images/avatar-1.png" alt="user avatar" title="" />
+				</div>
+				<p>Hello <span>James Garett</span></p>
+			</div>
+		</div>
+		
+		<div class="content-concert">
+			<ul>
+				<% for(var i=0; i<gigs.length; i++) { %>
+				<li>
+					<p class="date"><%= gigs[i].date %></p>
+					<div class="cover">
+						<!--<img src="<%= gigs[i].img %>" />-->
+						<div class="img" style="background-image: url(<%= gigs[i].img %>);"></div>
+						<div class="info">
+							<h3><%= gigs[i].name %></h3>
+							<p class="adress-fast"><%= gigs[i].venue.name %></p>
+						</div>
+						
+						<div class="overlay">
+							<a href="#">
+								<div class="black-cover"></div>
+								<div class="play"></div>
+							</a>
+						</div>
+					</div>
+				</li>
+				<% } %>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
