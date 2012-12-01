@@ -5,23 +5,21 @@ function Lastfm() {
 	var apiPrefix = "http://ws.audioscrobbler.com/2.0/?api_key="+apiKey+"&format=json";
 
 	this.LastfmArtist = function(name) {
-		var self = this;
 		this.id = name.replace(/\s/g, "+");
 		this.name = name;
-
-		function parseArtist(artist) {
-			
-		}
-
+		/*
+		var self = this;
+		function parseArtist(artist) {}
 		var reqUrl = apiPrefix + "&method=artist.getinfo&artist="+this.id;
 		$.getJSON(reqUrl, function(res){
 			if (res && res.artist)
 				parseArtist(res.artist);
 			console.log("artist", self.name, reqUrl, res);
 		});
+		*/
 	}
 
-	this.LastfmGig = function(a) {
+	this.LastfmGig = function(a, cb) {
 		var self = this;
 		this.a = a;
 		this.name = a.innerText;
@@ -29,9 +27,10 @@ function Lastfm() {
 		this.id = this.gId.split("/").pop().split("+")[0];
 
 		if (this.gId.indexOf("/venue/") == 0)
-			return null;
+			return cb();
 
-		function parseEvent(event) {
+		function parseEvent(event, cb) {
+			/*
 			if (typeof event.artists.artist == "string")
 				self.artists = [
 					new lastfm.LastfmArtist(event.artists.artist)
@@ -40,13 +39,48 @@ function Lastfm() {
 				self.artists = event.artists.artist.map(function(name, i){
 					return new lastfm.LastfmArtist(name);
 				});
+			*/
+			self.date = new Date(event.startDate);
+			self.desc = event.description;
+			self.url = event.website || event.url;
+			if (event.tags && event.tags.tag)
+				self.tags = event.tags.tag;
+			if (event.image) {
+				//console.log(typeof event.image, event.image)
+				if (typeof event.image == "string")
+					self.img = event.image;
+				else
+					for(var i=0; i<event.image.length; ++i)
+						self.img = event.image[i]["#text"];
+			}
+			if (event.venue) {
+				self.venue = {
+					id: event.venue.id,
+					name: event.venue.name,
+					url: event.venue.website || event.venue.url,
+				};
+				if (event.venue.location) {
+					self.venue.city = event.venue.location.city;
+					self.venue.street = event.venue.location.street;
+					self.venue.country = event.venue.location.country;
+					self.venue.postalcode = event.venue.location.postalcode;
+					if (event.venue.location["geo:point"])
+						self.venue.latlng = [
+							event.venue.location["geo:point"]["geo:lat"],
+							event.venue.location["geo:point"]["geo:long"]
+						];
+				}
+			}
+			cb(self);
 		}
 
 		var reqUrl = apiPrefix + "&method=event.getinfo&event="+this.id;
 		$.getJSON(reqUrl, function(res){
 			if (res && res.event)
-				parseEvent(res.event);
-			console.log("event", self.name, reqUrl, res);
+				parseEvent(res.event, cb);
+			else
+				cb();
+			//console.log("event", self.name, /*reqUrl, res*/ self);
 		});
 	}
 }
@@ -57,17 +91,32 @@ function GigDetector() {
 	var lastfm = new Lastfm();
 
 	this.getGigLinks = function() {
-		/*
-		var elts = document.getElementsByTagName("a");
-		for (var j=0; j<elts.length; ++j)
-			toDetect.push(elts[j]);
-		*/
 		return $("a.url").map(function(i, a) {
-			//var gId = a.href.substr(a.href.indexOf("/", 10));
-			//return {i:i, a:a, name:a.innerText, gId:gId};
 			return new lastfm.LastfmGig(a);
 		});
-	}
+	};
+
+	this.fetchGigLinks = function(gigHandler, onDone) {
+		var anchors = $("a.url");
+		var links = []; /*$("a.url").map(function(i,a){
+			return a;
+		});*/
+		for (var i = anchors.length - 1; i >= 0; i--)
+			links.push(anchors[i]);
+		(function next() {
+			var link = links.pop();
+			//console.log("next", link.innerText)
+			if (!link)
+				return onDone();
+			else
+				new lastfm.LastfmGig(link, function(gig) {
+					if (gig)
+						gigHandler(gig);
+					next();
+				});
+		})();
+	};
+
 /*
 	this.run = function(addThumb, whenDone) {
 		console.log("Detecting Gigs...");

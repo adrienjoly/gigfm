@@ -174,7 +174,12 @@ console.log("-= gigfm bookmarklet =-");
 		//trackDetector.run(addThumb, whenDone);
 		var gigDetector = new GigDetector();
 		//gigDetector.run(addThumb, whenDone);
-		console.log(gigDetector.getGigLinks());
+		//console.log(gigDetector.getGigLinks());
+		gigDetector.fetchGigLinks(function(gig) {
+			console.log(gig.name, gig);
+		}, function() {
+			console.log("done!")
+		})
 	}
 
   //============================================================================
