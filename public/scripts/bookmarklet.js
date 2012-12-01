@@ -406,5 +406,5 @@ console.log("-= gigfm bookmarklet =-");
 		else initGigfmBookmarklet();
 	})();
 	*/
-	include(urlPrefix + "/css/bookmarklet.css" + urlSuffix, initGigfmBookmarklet);
+	include(urlPrefix + "/stylesheets/bookmarklet.css" + urlSuffix, initGigfmBookmarklet);
 })();

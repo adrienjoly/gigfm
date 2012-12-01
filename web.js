@@ -44,6 +44,11 @@ app.dynamicHelpers({
 });
 
 function render_page(req, res) {
+  res.render("bookmarklet.ejs", {
+      layout: false,
+      req: req
+    });
+  /*
   req.facebook.app(function(app) {
     req.facebook.me(function(user) {
       res.render('index.ejs', {
@@ -54,6 +59,7 @@ function render_page(req, res) {
       });
     });
   });
+  */
 }
 
 function handle_facebook_request(req, res) {
