@@ -4,7 +4,7 @@ var util    = require('util');
 
 var lastfm  = require('lastfm');
 
-var DEV = false;
+var DEV = true;
 var apiKey = DEV ? "74b103511369671daf6df03945cee796" : "9c5df33c08281a3dbd68378f4027728e";
 var apiSecret = DEV ? "47f5770005bf9795612fd321abd8bcf8" : "6bc5cbaeef943d1ac2f84dfba8b51447";
 lastfm = new lastfm.LastFM(apiKey, apiSecret);
@@ -84,6 +84,8 @@ app.get('/demo', function(req, res) {
 app.get('/', makeRenderer("index.ejs", {
   loginUrl: "https://www.last.fm/api/auth/?api_key=" + apiKey
 }));
+
+app.get('/about', makeRenderer("about.ejs"));
 
 app.get('/lastfmCallback', function(req, res) {
   lastfm.fetchSession(req.query["token"], function(session){

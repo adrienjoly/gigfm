@@ -1,0 +1,281 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+body {
+	background: #F6F0DB;
+	font-size: 14px;
+	font-family: "Helvetica Neue", Helvetica, Arial, Sans-serif;
+	line-height: 21px;
+}
+
+a {
+	text-decoration: none;
+	color: #8268AF;
+}
+
+#background-home {
+	background: url(/images/background-about.jpg)no-repeat;
+	height: 458px;
+	background-size: cover;
+}
+
+.wrap {
+	width: 930px;
+	margin: 0 auto;
+	padding: 0 15px;
+}
+
+.clear {
+	clear: both;
+}
+
+/* HEADER */
+#header {
+	background: rgba(48,48,48,0.7);
+	color: #c9c9c9;
+	padding: 16px 10px;
+	font-size: 12px;
+	margin-bottom: 40px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-webkit-border-bottom-right-radius: 3px;
+	-webkit-font-smoothing: antialiased;
+}
+
+#background-home {
+	margin-bottom: 40px;
+}
+
+.baseline {
+	position: relative;
+	padding-top: 44px;
+}
+
+.baseline h1 {
+	font-weight: bold;
+	color: #FFF;
+	font-size: 32px;
+	line-height: 58px;
+	text-shadow: 0 1px 0 rgba(0,0,0,1);
+	-webkit-font-smoothing: antialiased;
+	margin-bottom: 22px;
+}
+
+.baseline h2 {
+	margin-bottom: 10px;
+	color: #b7b7b7;
+	font-size: 18px;
+	text-shadow: 0 1px 0 rgba(0,0,0,1);
+}
+
+.baseline h2 a {
+	color: white;
+}
+
+.baseline .social {
+	margin-top: 24px;
+	/*text-align: center;*/
+}
+
+.baseline .social .fblikeBtn {
+	float: left;
+	width: 100px;
+}
+
+/* BODY */
+.content-concert h2 {
+	font-size: 30px;
+	text-align: center;
+	padding: 60px 0;
+	color: #743d14;
+	font-weight: bold;
+	text-shadow: 0 1px 0 rgba(255,255,255,1);
+	background: url(/images/surligne-home.png) no-repeat center;
+}
+
+.team li {
+	width: 300px;
+	float: left;
+}
+
+.team li.work {
+	background: url(/images/icon-work.png) no-repeat;
+	width: 330px;
+	height: 300px;
+}
+
+.team li:last-child {
+	margin-right: 0;
+}
+
+.cover {
+	position: relative;
+}
+
+.cover img {
+	border-radius: 200px;
+}
+
+p.info {
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+	color: #ae5c1f;
+	-webkit-font-smoothing: antialiased;
+	text-shadow: 0 1px 0 rgba(255,255,255,1);
+	margin-top: 18px;
+}
+
+.team .overlay {
+	position: absolute;
+	top: 0;
+	opacity: 0;
+	-webkit-transition: all .3s;
+}
+
+.team li .cover:hover .overlay {
+	display: block;
+	opacity: 1;
+}
+
+.team .overlay .black-cover {
+	background: #000;
+	width: 300px;
+	height: 300px;
+	border-radius: 200px;
+	top: 0;
+	opacity: 0.7;
+}
+
+.team .overlay .info {
+	position: absolute;
+	top: 128px;
+	left: 56px;
+	text-align: center;
+	
+}
+
+.team .overlay .info p {
+	min-width: 200px;
+	font-size: 16px;
+	color: #FFF;
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgba(255,255,255,0.4);
+}
+
+.team .overlay .info ul li * {
+	margin: 0 auto;
+	text-align: center;
+}
+
+.team .overlay .info ul li {
+	width: auto;
+	display: inline-block;
+	float: none!important;
+}
+
+.team .overlay .info ul {
+	text-align: center;
+	overflow: hidden;
+}
+
+.team .overlay .info ul li .dribbble {
+	display: inline-block;
+	text-indent: -9999px;
+	width: 40px;
+	height: 40px;
+	background: url(/images/icon-dribbble.png) no-repeat;
+}
+
+.team .overlay .info ul li .linkedin {
+	display: inline-block;
+	text-indent: -9999px;
+	width: 40px;
+	height: 40px;
+	background: url(/images/icon-linkedin.png) no-repeat;
+}
+
+.team .overlay .info ul li .twitter {
+	display: inline-block;
+	text-indent: -9999px;
+	width: 40px;
+	height: 40px;
+	background: url(/images/icon-twitter.png) no-repeat;
+}
+
+.footer {
+	margin: 40px 0;
+	padding: 10px 0;
+	border-top: 1px solid #E5C9AD;
+	box-shadow: inset 0 1px 0 rgba(255,255,255,1);
+}
+
+.footer p {
+	color: #b97957;
+	float: left;
+}
+
+.footer ul {
+	float: right;
+}
+
+.footer li {
+	float: left;
+	margin-right: 20px;
+}
+
+.footer li:last-child {
+	margin-right: 0;
+}
+
+.footer li a {
+	
+}
