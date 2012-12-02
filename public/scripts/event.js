@@ -68,11 +68,28 @@ $(document).ready(function() {
       });
     }
 
+    function addTickets(artistName) {
+      var apiKey = "zfqPVm6YaETWj5fS";
+      var url = "http://api.songkick.com/api/3.0/events.json?apikey="+apiKey+"&artist_name="+encodeURIComponent(artistName)+"&location=clientip"; //location=ip:94.228.36.39
+      $.getJSON(url, function(res) {
+        console.log("songkick", res);
+        try {
+          $("#buy").attr("href", res.resultsPage.results.event[0].uri);
+        }
+        catch (e) {
+          $("#buy").hide();
+        }
+      });
+    }
+
     var day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     var month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
     function renderDate(d) {
-      return day[d.getDay()] + ", " + month[d.getMonth()] + " " + d.getDate() + "th";
+      var mn = d.getMinutes();
+      if ((""+mn).length < 2)
+        mn = "0" + mn;
+      return day[d.getDay()] + ", " + month[d.getMonth()] + " " + d.getDate() + "th, " + d.getHours() + ":" + mn;
     }
 
     var lastfm = new Lastfm();
@@ -80,11 +97,19 @@ $(document).ready(function() {
       document.title = gig.name;
       $("h1").text(gig.name);
       $("#date").text(renderDate(gig.date));
-      $("h4").text(gig.venue.name);
-      $("#adresse p").text(gig.venue.street + ", " + gig.venue.city);
-      for (var i in gig.artists)
-        $("#artists").append("<li>"+gig.artists[i].name+"</li>");
-      if (gig.artists) {
+      if (gig.venue) {
+        $("h4").text(gig.venue.name);
+        $("#adresse p").text(gig.venue.street + ", " + gig.venue.city);
+        var venue = encodeURIComponent((gig.venue.name || gig.venue.street) + ", " + (gig.venue.city || ""));
+        var url = "https://maps.google.fr/maps?q=" + venue.replace(/\%20/g, "+") + "&output=embed&iwloc=near";
+        $("#map iframe").attr("src", url);
+      }
+      else
+        $("#adresse").hide();
+      if (gig.artists && gig.artists.length) {
+        addTickets(gig.artists[0].name);
+        for (var i in gig.artists)
+          $("#artists").append("<li>"+gig.artists[i].name+"</li>");
         (function next() {
           var artist = gig.artists.shift();
           if (!artist)
@@ -93,6 +118,8 @@ $(document).ready(function() {
             addArtist(artist, addTrack, next);
         })();
       }
+      else
+        whenDone();
     });
 
   })(gId);
