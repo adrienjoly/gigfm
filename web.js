@@ -10,7 +10,8 @@ var apiSecret = DEV ? "47f5770005bf9795612fd321abd8bcf8" : "6bc5cbaeef943d1ac2f8
 lastfm = new lastfm.LastFM(apiKey, apiSecret);
 
 var APP = {
-  name: "Gig.fm"
+  name: "Gig.fm",
+  url: "https://gigfm.herokuapp.com"
 };
 
 // create an express webserver
