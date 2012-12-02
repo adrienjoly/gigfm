@@ -70,14 +70,24 @@ app.get('/festival/*', makeRenderer("event.ejs"));
 
 app.get('/lastfmCallback', function(req, res) {
   lastfm.fetchSession(req.query["token"], function(session){
-    res.redirect('/gigs?user='+session.name+'&sk='+session.key); 
+    res.cookie("gigfm_user", session.name);
+    res.cookie("gigfm_sk", session.key);
+    res.redirect('/gigs');
+    //res.redirect('/gigs?user='+session.name+'&sk='+session.key); 
   });
 });
 
 app.get('/gigs', function(req, res) {
-  lastfm.fetchRecommendedGigs(req.query["sk"], function(gigs) {
-    renderAppPage(req, res, "gigs.ejs", { gigs: gigs });
-  });
+  try {
+    var sk = req.cookies.gigfm_sk || req.query["sk"];
+    console.log("sk", sk, req.cookies);
+    lastfm.fetchRecommendedGigs(sk, function(gigs) {
+      renderAppPage(req, res, "gigs.ejs", { gigs: gigs });
+    });
+  }
+  catch (e) {
+    res.redirect("/");
+  }
 });
 
 app.get('/test', function(req, res) {
