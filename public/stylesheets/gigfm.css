@@ -54,6 +54,28 @@ body {
 	font-family: "Helvetica Neue", Helvetica, Arial, Sans-serif;
 	line-height: 21px;
 }
+/*
+body.loading > #wrap > * {
+	display: none;
+}
+*/
+#loadingAnim {
+	display: none;
+	background: url(/images/loading.gif);
+	width: 24px;
+	height: 24px;
+}
+
+body.loading > #wrap > #header {
+	display: block;
+}
+
+body.loading #loadingAnim {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	display: block;
+}
 
 #wrap {
 	width: 930px;
@@ -118,17 +140,19 @@ body {
 
 /* CONTENT DASHBOARD */
 .content-concert ul {
+	width: 945px;
+	position: relative;
+	left: -7.5px;
 }
 
 .content-concert li {
 	float: left;
 	width: 300px;
-	margin-right: 15px;
+	margin-left: 7.5px;
+	margin-right: 7.5px;
+	margin-bottom: 40px;
 }
 
-.content-concert li:last-child {
-	margin-right: 0;
-}
 
 .content-concert li p.date {
 	color: #ae5c1f;
@@ -187,12 +211,13 @@ li .cover .img {
 .content-concert .overlay {
 	position: absolute;
 	top: 0;
-	display: none;
-	
+	opacity: 0;
+	-webkit-transition: all .3s;
 }
 
 .content-concert li .cover:hover .overlay {
 	display: block;
+	opacity: 1;
 }
 
 .content-concert .overlay a .black-cover {
@@ -291,6 +316,7 @@ li .cover .img {
 	border-bottom: 1px solid #CFC5B2;
 	padding: 8px;
 	min-height: 27px;
+	cursor: pointer;
 }
 
 .playlist .tracklist ul li:last-child {
@@ -298,12 +324,16 @@ li .cover .img {
 }
 
 .playlist .tracklist ul li .play {
-	width: 27px;
-	height: 27px;
-	background: url(/images/play-icon.png) no-repeat;
+	width: 28px;
+	height: 28px;
+	background: url(/images/btn-mini-play.png) no-repeat;
 	display: inline-block;
 	float: left;
 	margin-right: 8px;
+}
+
+.playlist .tracklist ul li.playing .play {
+	background-position: 0 -29px;
 }
 
 .playlist .tracklist ul li div a {

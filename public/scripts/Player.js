@@ -498,6 +498,9 @@ function GigfmPlayer() {
 	var gigfmPlayerFunctions = {
 		onReady: function() {},
 		onTrackChange: function(track) {
+
+			$("#tracklist .playing").removeClass("playing");
+			$("#tracklist li").eq(track.index).addClass("playing");
 			currentTrack = track;
 			currentTrack.yetToPublish = true;
 			//console.log("on track change", currentTrack);
@@ -520,6 +523,7 @@ function GigfmPlayer() {
 			setState("loading", $post);
 		},
 		onPlay: function() {
+			$("body").removeClass("loading");
 			setState("playing");
 			setPageTitlePrefix("▶");
 		},
