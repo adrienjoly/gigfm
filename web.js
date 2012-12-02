@@ -11,7 +11,9 @@ lastfm = new lastfm.LastFM(apiKey, apiSecret);
 
 var APP = {
   name: "Gig.fm",
-  url: "https://gigfm.herokuapp.com"
+  url: "https://gigfm.herokuapp.com",
+  fbPage: "https://www.facebook.com/pages/Gigfm/454214504613634",
+  twitterHandle: "gigfm_net"
 };
 
 // create an express webserver
