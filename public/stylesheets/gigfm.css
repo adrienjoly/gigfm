@@ -80,6 +80,10 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
+#header > a {
+	float: left;
+}
+
 .user {
 	float: right;
 	height: 35px;
@@ -104,6 +108,7 @@ body {
 .user p {
 	line-height: 34px;
 	display: inline-block;
+	float: right;
 }
 
 .user p span {
