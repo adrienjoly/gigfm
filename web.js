@@ -4,6 +4,14 @@ var util    = require('util');
 
 var lastfm  = require('lastfm');
 
+var DEV = true;
+var apiKey = DEV ? "74b103511369671daf6df03945cee796" : "9c5df33c08281a3dbd68378f4027728e";
+var apiSecret = DEV ? "47f5770005bf9795612fd321abd8bcf8" : "6bc5cbaeef943d1ac2f84dfba8b51447";
+lastfm = new lastfm.LastFM(apiKey, apiSecret);
+
+var APP = {
+  name: "gig.fm"
+};
 
 // create an express webserver
 var app = express.createServer(
@@ -41,104 +49,40 @@ app.dynamicHelpers({
   },
 });
 
-
-
-app.get('/', function (req, res) {
-  res.render("index.ejs", {
-      layout: false,
-      req: req
-    });
-});
-
-function renderEvent(req, res) {
-  res.render("event.ejs", {
-    layout: false,
-    req: req
-  });
+function renderAppPage(req, res, template, p) {
+  var p = p || {};
+  p.app = APP;
+  p.layout = false;
+  p.req = req;
+  p.apiKey = apiKey;
+  res.render(template, p);
 }
 
-app.get('/event/*', renderEvent);
-app.get('/festival/*', renderEvent);
+function makeRenderer(template, p) {
+  return function (req, res) {
+    renderAppPage(req, res, template, p);
+  }
+}
+
+app.get('/', makeRenderer("index.ejs"));
+app.get('/event/*', makeRenderer("event.ejs"));
+app.get('/festival/*', makeRenderer("event.ejs"));
 
 app.get('/lastfmCallback', function(req, res) {
-  var token = req.query["token"];
-  console.log("token: ", token);
-  lastfm.fetchSessionKey(token, function(sk){
-    console.log("session key: ", sk);
-    res.redirect('/gigs?sk='+sk); 
+  lastfm.fetchSession(req.query["token"], function(session){
+    res.redirect('/gigs?user='+session.name+'&sk='+session.key); 
   });
-  /*
-  lastfm.getArtists("cher", function(res){
-    console.log(res);
-  });
-  */
 });
 
-var day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-var month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-
-function renderDate(d) {
-  return day[d.getDay()] + ", " + month[d.getMonth()] + " " + d.getDate() + "th";
-}
-
-function parseEvent(event, cb) {
-  var self = {};
-  self.gId = event.url.substr(event.url.indexOf("/", 10));
-  self.name = event.title;
-  self.date = renderDate(new Date(event.startDate));
-  self.desc = event.description;
-  self.url = event.website || event.url;
-  if (event.tags && event.tags.tag)
-    self.tags = event.tags.tag;
-  if (event.image) {
-    //console.log(typeof event.image, event.image)
-    if (typeof event.image == "string")
-      self.img = event.image;
-    else
-      for(var i=0; i<event.image.length; ++i)
-        self.img = event.image[i]["#text"];
-  }
-  if (event.venue) {
-    self.venue = {
-      id: event.venue.id,
-      name: event.venue.name,
-      url: event.venue.website || event.venue.url,
-    };
-    if (event.venue.location) {
-      self.venue.city = event.venue.location.city;
-      self.venue.street = event.venue.location.street;
-      self.venue.country = event.venue.location.country;
-      self.venue.postalcode = event.venue.location.postalcode;
-      if (event.venue.location["geo:point"])
-        self.venue.latlng = [
-          event.venue.location["geo:point"]["geo:lat"],
-          event.venue.location["geo:point"]["geo:long"]
-        ];
-    }
-  }
-  if (typeof event.artists.artist == "string")
-    self.artists = [ event.artists.artist ];
-  else
-    self.artists = event.artists.artist;
-  return self;
-}
-
-function prepareGigs(gigs) {
-  gigs = gigs.events.event; //.slice(0, 3);
-  gigs = gigs.map(parseEvent);
-  //console.log("gigs", gigs);
-  return gigs;
-}
-
 app.get('/gigs', function(req, res) {
-  var sk = req.query["sk"];
-  lastfm.fetchRecommendedGigs(sk, function(gigs) {
-    res.render("gigs.ejs", {
-      layout: false,
-      req: req,
-      gigs: prepareGigs(gigs)
-    });
-    //res.send(gigs);
+  lastfm.fetchRecommendedGigs(req.query["sk"], function(gigs) {
+    renderAppPage(req, res, "gigs.ejs", { gigs: gigs });
+  });
+});
+
+app.get('/test', function(req, res) {
+  lastfm.getTopTracks("cher", function(json){
+    res.json(json); 
   });
 });
 
