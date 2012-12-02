@@ -5,7 +5,7 @@ $(document).ready(function() {
 
   (function populateEventPage(gId) {
 
-    var TRACKS_PER_ARTIST = 1;
+    var TRACKS_PER_ARTIST = 5;
 
     var youtube = new YoutubeSearch();
     var distance = new LevenshteinDistance();
