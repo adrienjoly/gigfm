@@ -68,11 +68,20 @@ $(document).ready(function() {
       });
     }
 
+    var day = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    var month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+    function renderDate(d) {
+      return day[d.getDay()] + ", " + month[d.getMonth()] + " " + d.getDate() + "th";
+    }
+
     var lastfm = new Lastfm();
     new lastfm.LastfmGig({gId:gId}, function(gig) {
       document.title = gig.name;
       $("h1").text(gig.name);
-      $("#date").text(gig.date);
+      $("#date").text(renderDate(gig.date));
+      $("h4").text(gig.venue.name);
+      $("#adresse p").text(gig.venue.street + ", " + gig.venue.city);
       for (var i in gig.artists)
         $("#artists").append("<li>"+gig.artists[i].name+"</li>");
       if (gig.artists) {
