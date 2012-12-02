@@ -55,6 +55,10 @@ function renderAppPage(req, res, template, p) {
   p.layout = false;
   p.req = req;
   p.apiKey = apiKey;
+  p.user = {
+    name: (req.cookies || {}).gigfm_user || "James Garett",
+    img: (req.cookies || {}).gigfm_uimg || "/images/avatar-1.png"
+  }
   res.render(template, p);
 }
 
@@ -70,10 +74,15 @@ app.get('/festival/*', makeRenderer("event.ejs"));
 
 app.get('/lastfmCallback', function(req, res) {
   lastfm.fetchSession(req.query["token"], function(session){
-    res.cookie("gigfm_user", session.name);
     res.cookie("gigfm_sk", session.key);
-    res.redirect('/gigs');
-    //res.redirect('/gigs?user='+session.name+'&sk='+session.key); 
+    res.cookie("gigfm_user", session.name);
+    lastfm.getUserInfo(session.name, function(user){
+      console.log("user", user);
+      if (user && user.image)
+        res.cookie("gigfm_uimg", user.image[0]["#text"]);
+      res.redirect('/gigs');
+      //res.redirect('/gigs?user='+session.name+'&sk='+session.key);
+    });
   });
 });
 

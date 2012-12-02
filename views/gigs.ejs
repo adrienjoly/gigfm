@@ -62,12 +62,12 @@ gigs = gigs.events ? gigs.events.event.map(parseEvent) : [];
 	<div id="wrap">
 		<div id="header">
 			<a href="/gigs"><img src="/images/logo.png" alt="logo" title="Gig.fm" width="91" height="35" /></a>
-			<div class="user">
-				<div class="user-avatar">
-					<img src="/images/avatar-1.png" alt="user avatar" title="" />
-				</div>
-				<p>Hello <span>James Garett</span></p>
-			</div>
+	        <div class="user">
+	          <div class="user-avatar">
+	            <img src="<%= user.img %>" alt="user avatar" title="" />
+	          </div>
+	          <p>Hello <span><%= user.name %></span></p>
+	        </div>
 		</div>
 		
 		<div class="content-concert">
