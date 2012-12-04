@@ -69,7 +69,7 @@ $(document).ready(function() {
     }
 
     function addTickets(artistName) {
-      var apiKey = "zfqPVm6YaETWj5fS";
+      var apiKey = "MZj1Lmdx2p8Fc9Eh";
       var url = "http://api.songkick.com/api/3.0/events.json?apikey="+apiKey+"&artist_name="+encodeURIComponent(artistName)+"&location=clientip"; //location=ip:94.228.36.39
       $.getJSON(url, function(res) {
         console.log("songkick", res);
