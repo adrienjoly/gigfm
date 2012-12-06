@@ -175,7 +175,7 @@ function prepareEvent(req, cb) {
   console.log("prepare event", gId);
   var p = {
     title: APP.name,
-    url: APP.url,
+    url: APP.url + req.url,
     img: APP.img
   };
   lastfm.fetchGig(gId, function(gig){
