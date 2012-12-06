@@ -61,7 +61,7 @@ a {
 }
 
 #background-home {
-	background: url(/images/background-about.jpg)no-repeat;
+	background: url(/images/background-about.jpg) no-repeat bottom;
 	height: 458px;
 	background-size: cover;
 }
