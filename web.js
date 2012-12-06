@@ -1,7 +1,6 @@
 var async   = require('async');
 var express = require('express');
 var util    = require('util');
-
 var lastfm  = require('lastfm');
 
 var DEV = false;
@@ -11,7 +10,9 @@ lastfm = new lastfm.LastFM(apiKey, apiSecret);
 
 var APP = {
   name: "Gig.fm",
-  url: "https://gigfm.herokuapp.com",
+  url: "http://www.gigfm.net", //"https://gigfm.herokuapp.com",
+  img: "http://www.gigfm.net/images/logo-box.png",
+  desc: "Gig.fm automatically generates a Youtube playlist for each upcoming concert that matches your musical preferences, in your city. It's a great way to discover new bands, and see them on stage!",
   fbPage: "https://www.facebook.com/pages/Gigfm/454214504613634",
   twitterHandle: "gigfm_net"
 };
@@ -64,11 +65,14 @@ function renderAppPage(req, res, template, p) {
   res.render(template, p);
 }
 
-function makeRenderer(template, p, before) {
+function makeRenderer(template, p) {
   return function (req, res) {
-    if (before)
-      before(req, res);
-    renderAppPage(req, res, template, p);
+    if (p && typeof p == "function")
+      p(req, function(p) {
+        renderAppPage(req, res, template, p);
+      });
+    else
+      renderAppPage(req, res, template, p);
   }
 }
 
@@ -120,8 +124,81 @@ app.get('/gigs', function(req, res) {
   }
 });
 
-app.get('/event/*', makeRenderer("event.ejs"));
-app.get('/festival/*', makeRenderer("event.ejs"));
+function parseEvent(event, cb) {
+  self.name = event.title;
+  self.date = new Date(event.startDate);
+  self.desc = event.description;
+  self.url = event.website || event.url;
+  if (event.tags && event.tags.tag)
+    self.tags = event.tags.tag;
+  if (event.image) {
+    //console.log(typeof event.image, event.image)
+    if (typeof event.image == "string")
+      self.img = event.image;
+    else
+      for(var i=0; i<event.image.length; ++i)
+        self.img = event.image[i]["#text"];
+  }
+  if (event.venue) {
+    self.venue = {
+      id: event.venue.id,
+      name: event.venue.name,
+      url: event.venue.website || event.venue.url,
+    };
+    if (event.venue.location) {
+      self.venue.city = event.venue.location.city;
+      self.venue.street = event.venue.location.street;
+      self.venue.country = event.venue.location.country;
+      self.venue.postalcode = event.venue.location.postalcode;
+      if (event.venue.location["geo:point"])
+        self.venue.latlng = [
+          event.venue.location["geo:point"]["geo:lat"],
+          event.venue.location["geo:point"]["geo:long"]
+        ];
+    }
+  }
+  if (typeof event.artists.artist == "string")
+    self.artists = [
+      new lastfm.LastfmArtist(event.artists.artist)
+    ];
+  else
+    self.artists = event.artists.artist.map(function(name, i){
+      return new lastfm.LastfmArtist(name);
+    });
+  cb(self);
+}
+
+
+
+function prepareEvent(req, cb) {
+  var gId = req.url.split("?")[0];
+  console.log("prepare event", gId);
+  var p = {
+    title: APP.name,
+    url: APP.url,
+    img: APP.img
+  };
+  lastfm.fetchGig(gId, function(gig){
+    console.log("last fm gig:", gig);
+    if (gig && gig.event) {
+      gig = gig.event;
+      p.title = gig.title;
+
+      if (gig.image) {
+        if (typeof gig.image == "string")
+          p.img = gig.image;
+        else if (gig.image.length)
+          p.img = gig.image[gig.image.length-1]["#text"];
+      }
+      if (gig.venue)
+        p.title += " @ " + gig.venue.name;
+    }
+    cb({page:p});
+  });
+}
+
+app.get('/event/*', makeRenderer("event.ejs", prepareEvent));
+app.get('/festival/*', makeRenderer("event.ejs", prepareEvent));
 
 app.get('/test', function(req, res) {
   lastfm.getTopTracks("cher", function(json){
