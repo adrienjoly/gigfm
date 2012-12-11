@@ -48,7 +48,7 @@ function parseEvent(event, cb) {
   return self;
 }
 
-gigs = gigs.events ? gigs.events.event.map(parseEvent) : [];
+gigs = gigs.events && gigs.events.event ? gigs.events.event.map(parseEvent) : [];
 %>
 
 <!DOCTYPE html>
