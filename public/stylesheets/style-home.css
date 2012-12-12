@@ -187,9 +187,12 @@ a:hover {
 	
 }
 
-.content-concert li .cover img {
-	background-color: #000;
+.content-concert li .cover .img {
+	background-color: black;
 	border-radius: 3px;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
 }
 
 .content-concert li .info {
