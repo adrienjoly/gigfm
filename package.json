@@ -1,8 +1,8 @@
 {
-  "name":    "facebook-template-node",
+  "name":    "gigfm",
   "version": "0.0.1",
 
-  "description": "Template app for Heroku / Facebook integration, Node.js language",
+  "description": "A web app for playing music from Last.fm-recommended concerts. Based on facebook-template-node.",
 
   "dependencies": {
     "async":     "0.1.18",
@@ -13,5 +13,9 @@
 
   "engines": {
     "node": "0.6.x"
+  },
+
+  "scripts": {
+    "start": "node web.js"
   }
 }
