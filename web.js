@@ -1,7 +1,7 @@
 var async   = require('async');
 var express = require('express');
 var util    = require('util');
-var lastfm  = require('lastfm');
+var lastfm  = require('./lastfm.js');
 
 var DEV = false;
 var apiKey = DEV ? "74b103511369671daf6df03945cee796" : "9c5df33c08281a3dbd68378f4027728e";
